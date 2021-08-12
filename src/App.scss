@@ -22,13 +22,52 @@ html,body{
   color:#fff;
   border-right: 1px solid #2f3336;
   height: 100%;
+  padding: 25px;
   h3{
     font-size: 24px;
     font-weight: normal;
     border-bottom:1px solid #2f3336;
     padding-bottom: 20px;
     margin-bottom: 20px;
-
+  }
+  ul{
+    li:not(:last-child){
+      margin-bottom: 20px;
+    }
+  }
+  .input{
+    width: 100%;
+    background: transparent;
+    border:1px solid #2f3336;
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    color: #fff;
+    font-size: 15px;
+    &::placeholder{
+      color: #fff;
+      font-size: 15px;
+    }
+    
+    
+  }
+  textarea{
+    resize: none;
+    height: 100px;
+  }
+  label{
+    color: #6e767d;
+    font-size: 15px;
+  }
+  button{
+    font-size: 16px;
+    background-color: #1ca1f2;
+    color: #fff;
+    font-weight: 600;
+    width: 100%;
+    height: 50px;
+    border-radius: 25px;
+    cursor: pointer;
   }
 }
 .tweet-container{
@@ -58,6 +97,7 @@ html,body{
       color: #fff;
       display: flex;
       align-items: center;
+      height: 19px;
       svg{
         margin-left: 3px;
       }
@@ -72,6 +112,10 @@ html,body{
       font-size: 23px;
       line-height: 28px;
       color: #fff;
+      overflow-wrap: break-word;
+      span{
+        color: #1ca1f2;
+      }
     }
   }
   &-stats{
