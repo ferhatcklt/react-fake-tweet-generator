@@ -72,6 +72,32 @@ html,body{
 }
 .tweet-container{
   padding: 0 50px;
+
+  .fetch-info{
+    display: flex;
+    column-gap: 10px;
+
+    input{
+      width: 60%;
+      height: 40px;
+      background-color: transparent;
+      border: 1px solid #6e767d;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      padding: 10px;
+    }
+    button{
+      width: 40%;
+      text-align: center;
+      border-radius: 10px;
+      background-color: #1ca1f2;
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
 }
 
 .tweet{
