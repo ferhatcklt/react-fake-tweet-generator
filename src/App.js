@@ -4,6 +4,7 @@ import { LikeIcon, ReplyIcon, RetweetIcon, ShareIcon, VerifiedIcon } from './com
 import {AvatarLoader} from './components/loaders';
 import {useScreenshot} from 'use-react-screenshot';
 import Switch from '@material-ui/core/Switch';
+import {language} from './components/language';
 
 function convertImgToBase64(url, callback, outputFormat){
   var canvas = document.createElement('canvas');
@@ -50,12 +51,17 @@ function App() {
   const [quoteTweets, setQuoteTweets] = useState(0);
   const [likes, setLikes] = useState(0);
   const [image,takeScreenshot ] = useScreenshot();
+  const [lang, setLang] = useState('tr');
+  const [selectLanguage, setSelectLanguage] = useState();
   const getImage = () => takeScreenshot(tweetRef.current);
   useEffect(() => {
     if(image){
       downloadRef.current.click();
     }
   }, [image]);
+  useEffect(() => {
+    setSelectLanguage(language[lang]);
+  }, [lang]);
   const avatarHandle = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -86,10 +92,10 @@ function App() {
   return (
     <>
       <div className="tweet-settings">
-        <h3>Tweet Ayarları</h3>
+        <h3>{selectLanguage?.setting}</h3>
         <ul>
-          <label>Ad Soyad</label><li><input type="text" className="input"  value={name} onChange={e => setName(e.target.value)} /></li>
-          <label>Kullanıcı Adı</label><li><input type="text" className="input" value={username} onChange={e => setUsername(e.target.value)}/></li>
+          <label>{selectLanguage?.name}</label><li><input type="text" className="input"  value={name} onChange={e => setName(e.target.value)} /></li>
+          <label>{selectLanguage?.username}</label><li><input type="text" className="input" value={username} onChange={e => setUsername(e.target.value)}/></li>
           <label>Tweet</label><li><textarea type="text" className="input" value={tweet} onChange={e => setTweet(e.target.value)}  maxLength="290" /></li>
           <label>Avatar</label><li><input type="file" className="input"  onChange={avatarHandle}   /></li>
           <label>Retweet</label><li><input type="text" className="input"  value={retweets} onChange={e => setRetweets(e.target.value)}/></li>
@@ -102,9 +108,13 @@ function App() {
         </ul>
       </div>
       <div className="tweet-container">
+        <div className="app-language">
+          <span onClick={(e) => setLang('tr')} className={lang === 'tr' && 'active'}>Türkçe</span>
+          <span onClick={(e) => setLang('en')} className={lang === 'en' && 'active'}>English</span>
+        </div>
         <div className="fetch-info">
-          <input value={username}  onChange={e => setUsername(e.target.value)} className="input" placeholder="Kullanıcı adı"/>
-          <button onClick={fetchTwitterInfo}>Son Tweeti Çek</button>
+          <input value={username}  onChange={e => setUsername(e.target.value)} className="input" placeholder={selectLanguage?.username}/>
+          <button onClick={fetchTwitterInfo}>{selectLanguage?.lasttweet}</button>
         </div>
         <div className="tweet" ref={tweetRef}>
           <div className="tweet-author">
