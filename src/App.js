@@ -3,6 +3,23 @@ import './App.scss';
 import { LikeIcon, ReplyIcon, RetweetIcon, ShareIcon, VerifiedIcon } from './components/icons';
 import {AvatarLoader} from './components/loaders';
 import {useScreenshot} from 'use-react-screenshot';
+import Switch from '@material-ui/core/Switch';
+
+function convertImgToBase64(url, callback, outputFormat){
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  var img= new Image;
+  img.crossOrigin = 'Anonymous';
+  img.onload=function(){
+    canvas.height=img.height;
+    canvas.width=img.width;
+    ctx.drawImage(img,0,0);
+    var dataUrl = canvas.toDataURL(outputFormat || 'image/png');
+    callback.call(this, dataUrl);
+    canvas=null;
+  };
+  img.src=url;
+}
 
 const tweetFormat = tweet => {
   tweet = tweet
@@ -48,6 +65,23 @@ function App() {
     reader.readAsDataURL(file);
   };
 
+  const fetchTwitterInfo = () => {
+    fetch(`https://typeahead-js-twitter-api-proxy.herokuapp.com/demo/search?q=${username}`
+  )
+  .then(res => res.json())
+  .then(data => {
+    const twitter = data[0];
+    setAvatar(twitter.profile_image_url_https);
+    convertImgToBase64(twitter.profile_image_url_https, function(base64Image){
+      setAvatar(base64Image);
+    });
+    setName(twitter.name);
+    setTweet(twitter.status.text);
+    setRetweets(twitter.status.retweet_count);
+    setLikes(twitter.status.favorite_count);
+    setIsVerified(twitter.verified);
+  })
+  }
 
   return (
     <>
@@ -61,18 +95,22 @@ function App() {
           <label>Retweet</label><li><input type="text" className="input"  value={retweets} onChange={e => setRetweets(e.target.value)}/></li>
           <label>Alıntı Tweet</label><li><input type="text" className="input" value={quoteTweets} onChange={e => setQuoteTweets(e.target.value)}/></li>
           <label>Beğeni</label><li><input type="text" className="input"  value={likes} onChange={e => setLikes(e.target.value)}/></li>
-          <label>Onaylı Hesap</label><li><input type="checkbox" className="input"  value={isVerified} onChange={e => setIsVerified(e.target.value)}/></li>
+          <label>Onaylı Hesap</label><li><Switch color="primary"  value={isVerified} onChange={e => setIsVerified(e.target.checked)}/></li>
           
           <button onClick={getImage}>Oluştur</button>
           <a href={image} download="tweet.png" ref={downloadRef} style={{display:"none"}}>Tweeti indir</a>
         </ul>
       </div>
       <div className="tweet-container">
+        <div className="fetch-info">
+          <input value={username}  onChange={e => setUsername(e.target.value)} className="input" placeholder="Kullanıcı adı"/>
+          <button onClick={fetchTwitterInfo}>Son Tweeti Çek</button>
+        </div>
         <div className="tweet" ref={tweetRef}>
           <div className="tweet-author">
             {(avatar && <img src={avatar} alt="" />) || <AvatarLoader />}
             <div>
-              <div className="name">{name || 'Ad Soyad'} {isVerified === false || <VerifiedIcon />} </div>
+              <div className="name">{name || 'Ad Soyad'} {isVerified && <VerifiedIcon />} </div>
               <div className="username">@{username || 'kullaniciadi'}</div>
             </div>
           </div>
@@ -91,7 +129,7 @@ function App() {
             <span><ShareIcon /></span>
           </div>
         </div>
-      </div>
+      </div> 
     </>
     
   );
